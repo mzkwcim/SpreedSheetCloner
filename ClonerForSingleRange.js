@@ -1,18 +1,23 @@
 function duplicateSheetAndRename() {
-
+  // Pobierz aktywny arkusz
   var aktywnyArkusz = SpreadsheetApp.getActiveSpreadsheet();
 
+  // Pobierz wszystkie arkusze w arkuszu głównym
   var arkusze = aktywnyArkusz.getSheets();
 
+  // Znajdź arkusz do skopiowania (najbardziej wysunięty na prawo)
   var arkuszDoKopiowania = arkusze[arkusze.length - 1];
 
+  // Sprawdź, czy arkusz do skopiowania istnieje
   if (!arkuszDoKopiowania) {
     Logger.log("Brak arkusza do skopiowania.");
     return;
   }
 
+  // Skopiuj arkusz do nowego arkusza
   var nowyArkusz = arkuszDoKopiowania.copyTo(aktywnyArkusz);
 
+  // Ustaw nazwę nowego arkusza na podstawie aktualnej godziny
   var now = new Date();
   var month = now.getMonth() + 1;
   var nextMonth = month;
@@ -40,6 +45,7 @@ function duplicateSheetAndRename() {
     nextMonth += 1;
   }
 
+  // Poprawki dla formatowania jednocyfrowych dni, miesięcy i przyszłego dnia
   if (sunday.toString().length < 2) {
     sunday = "0" + sunday;
   }
@@ -64,8 +70,16 @@ function duplicateSheetAndRename() {
     Rename(nowyArkusz, nowaNazwa);
     clearValuesInRange(nowyArkusz, 'B2:I30');
   }
-
+  ukryjDrugiWierszWeWszystkichZakladkach();
   
+}
+
+function ukryjDrugiWierszWeWszystkichZakladkach() {
+  var skoroszyt = SpreadsheetApp.getActiveSpreadsheet();
+  var iloscZakladek = skoroszyt.getSheets().length;
+  skoroszyt.getSheets()[iloscZakladek-1].hideRows(13);
+  skoroszyt.getSheets()[iloscZakladek-1].hideRows(27);
+  skoroszyt.getSheets()[iloscZakladek-1].hideRows(29);
 }
 
 function Rename(tab, name) {
@@ -86,3 +100,4 @@ function clearValuesInRange(sheet, range) {
   var clearRange = sheet.getRange(range);
   clearRange.clearContent();
 }
+
