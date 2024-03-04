@@ -1,0 +1,47 @@
+function FillRange() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var allSheets = spreadsheet.getSheets();
+  var lastSheet = allSheets[allSheets.length - 1];
+  var value = 0;
+
+  var day = Time()+1;
+  var tab = [];
+
+  switch (day) {
+    case 1:
+      tab = [2, 3];
+      break;
+    case 2:
+      tab = [4];
+      break;
+    case 3:
+      tab = [5];
+      break;
+    case 4:
+      tab = [6, 7];
+      break;
+    case 5:
+      tab = [8, 9];
+      break;
+    default:
+      tab = [];
+      break;
+  }
+  if (tab.length > 0){
+    for (var j = 0; j < tab.length; j++) {
+      var data = []; 
+      for (var i = 2; i <= 30; i++) {
+        var komorka = lastSheet.getRange(i, tab[j]);
+        var sheetValue = komorka.getValue();
+        data.push((sheetValue === '') ? [value] : [sheetValue]);
+      }
+      lastSheet.getRange(2, tab[j], 29, 1).setValues(data);
+    }
+  }
+}
+
+function Time() {
+  var now = new Date();
+  var DayOfWeek = now.getDay();
+  return DayOfWeek;
+}
