@@ -1,0 +1,43 @@
+function CopyATrainingWeek() {
+  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = activeSpreadsheet.getSheets();
+  var sheetToCopy = sheets[sheets.length - 1];
+  var newSheet = sheetToCopy.copyTo(activeSpreadsheet);
+  var newname = sheetToCopy.getName().split(' ')[0] + " " + (parseInt(sheetToCopy.getName().split(' ')[1]) + 1);
+  newSheet.setName(newname);
+  processCell(newname);
+}
+
+function processCell(newname) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(newname);
+  var week = fullWeeksCounter()
+  var weightPullDown = [45, 40, 55, 60, 65, 60, 55, 50, 45, 52.5]
+  var repsPullDown = [10, 12, 6, 4, 3, 5, 7, 9, 11, 8 ]
+  var ohpWeight = [30, 32.5, 25, 22.5, 22.5, 25, 27.5, 30, 32.5, 35]
+  var ohpreps = [5, 3, 9, 11, 12, 10, 8, 6, 4, 2]
+  var bulgarianSpliSquatReps = [8, 10, 12, 11, 9, 7, 5, 3, 4, 6]
+  var bulgarianSplitSquatWeight = [15, 12.5, 10, 12.5, 15, 17.5, 20, 22.5, 22.5, 20]
+  var pullUpWeight = [0, 0, 5, 10, 15, 15, 10, 5]
+  var pullUpReps = [8, 7, 5, 3, 1, 2, 4, 6]
+  var singleLegDLReps = [7, 9, 11, 12, 10, 8, 6, 5]
+  var singlLegDLWeight = [25, 22.5, 20, 20, 22.5, 25, 27.5, 30]
+
+  sheet.getRange("C13").setValue((singleLegDLReps[week % singleLegDLReps.length]).toString() + "/strona" )
+  sheet.getRange("D13").setValue((singlLegDLWeight[week % singlLegDLWeight.length] + Math.floor(week/10)*2.5).toString() + "kg")
+  sheet.getRange("C12").setValue(pullUpReps[week % pullUpReps.length])
+  sheet.getRange("D12").setValue(pullUpWeight[week % pullUpWeight.length] + (Math.floor(week/10)*1.25).toString() + "kg")
+  sheet.getRange("C11").setValue(bulgarianSpliSquatReps[week % bulgarianSpliSquatReps.length])
+  sheet.getRange("D10").setValue((bulgarianSplitSquatWeight[week % bulgarianSplitSquatWeight.length] + (Math.floor(week/10)*2.5)).toString() + "kg/hantel")
+  sheet.getRange("C10").setValue(ohpreps[week % ohpreps.length])
+  sheet.getRange("D10").setValue((ohpWeight[week % ohpWeight.length] + (Math.floor(week/10)*2.5)).toString() + "kg")
+  sheet.getRange("C5").setValue(repsPullDown[week % weightPullDown.length])
+  sheet.getRange("D5").setValue((weightPullDown[week % weightPullDown.length] + (Math.floor(week/10)*2.5)).toString() + "kg")
+  sheet.getRange("D6").setValue((65 + (week * 2.5)).toString() + "kg")
+  var listOfCells = ["D3", "D4"];
+  for (var i = 0; i < listOfCells.length; i++) {
+    var cellValue = sheet.getRange(listOfCells[i]).getValue().replace(/[a-zA-Z]/g, "");
+    sheet.getRange(listOfCells[i]).setValue((week % 2 === 0) ? (Number(cellValue) + 2.5).toString() + "\\" + (Number(cellValue) + 2.5).toString() + "\\" + (Number(cellValue)) + "\\" + (Number(cellValue)) + "kg": (Number(cellValue) + 2.5) + "kg");
+  }
+}
+
+const fullWeeksCounter = () => (Math.floor((new Date() - new Date('2024-03-09')) / (7 * 24 * 60 * 60 * 1000)));
