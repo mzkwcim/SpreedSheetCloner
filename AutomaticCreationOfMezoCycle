@@ -1,0 +1,46 @@
+function CopyATrainingWeek() {
+  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = activeSpreadsheet.getSheets();
+  var sheetToCopy = sheets[sheets.length - 1];
+  var newSheet = sheetToCopy.copyTo(activeSpreadsheet);
+  var newname = sheetToCopy.getName().split(' ')[0] + " " + (parseInt(sheetToCopy.getName().split(' ')[1]) + 1);
+  newSheet.setName(newname);
+  processCell(newname);
+}
+
+function processCell(newname) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(newname);
+  var week = fullWeeksCounter()
+  var pullUpTraining2 = [1, 7, 4, 2]
+  var romanianDeadlift = [4, 3, 8, 6, 7, 5, 2]
+  var dumbbelRow = [3, 2, 8, 6, 5, 7, 4]
+  var tripleBoxJump = [3, 1, 2]
+  var tripleVerticalJump = [1, 3, 2]
+  var dropJump = [2, 1, 3]
+  var pullUpTraining4 = [6, 5, 3, 8]
+  var squat = [6, 3, 5, 4, 2]
+  var machineRow = [3, 6, 4, 7, 2, 5]
+  sheet.getRange("C9").setValue(pullUpTraining2[week%pullUpTraining2.length])
+  sheet.getRange("C10").setValue(romanianDeadlift[week%romanianDeadlift.length])
+  sheet.getRange("C11").setValue(dumbbelRow[week%dumbbelRow.length])
+  sheet.getRange("C15").setValue(tripleBoxJump[week%tripleBoxJump.length])
+  sheet.getRange("C16").setValue(tripleVerticalJump[week%tripleVerticalJump.length])
+  sheet.getRange("C17").setValue(dropJump[week%dropJump.length])
+  sheet.getRange("C21").setValue(pullUpTraining4[week%pullUpTraining4.length])
+  sheet.getRange("C22").setValue(squat[week%squat.length])
+  sheet.getRange("C23").setValue(machineRow[week%machineRow.length])
+  var listOfCells = ["C3", "C4", "C5", "C27", "C28", "C29"];
+  var adder = (week % 2) + 2
+  for (var i = 0; i < listOfCells.length; i++) {
+    var cellValue = sheet.getRange(listOfCells[i]).getValue().replace(/[a-zA-Z]/g, "");
+    sheet.getRange(listOfCells[i]).setValue((Number(cellValue) + adder).toString() + "s");
+  }
+  var multiplier = 1.7 + ((fullWeeksCounter()/2) * 0.075)
+  sheet.getRange("A31").setValue("Osoby pływające 200 mnożnik czasu " + multiplier.toString().replace(".",","))
+}
+
+const fullWeeksCounter = () => (Math.floor((new Date() - new Date('2024-03-09')) / (7 * 24 * 60 * 60 * 1000)));
+
+
+
+
