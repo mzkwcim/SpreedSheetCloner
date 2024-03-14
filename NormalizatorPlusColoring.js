@@ -1,71 +1,79 @@
+function processRange(range) {
+  var max = null;
+  var min = 400;
+
+  var values = range.getValues()[0];
+
+  for (var j = 0; j < values.length; j++) {
+    if (values[j] !== "") {
+      var normalized = values[j].toString().replace(/[^0-9,.:]/g, '').replace(",", ".").trim();
+      if (normalized.charAt(normalized.length - 3) === ":") {
+        normalized = normalized.replace(":", ".");
+      }
+      if (normalized.charAt(normalized.length - 1) === ":") {
+        normalized = normalized.replace(":", "");
+      }
+      normalized.replace(/\:$/, "");
+      if (normalized.charAt(1) === ":") {
+        normalized = parseFloat(normalized.substring(2)) + (60 * parseInt(normalized.charAt(0)));
+      }
+      console.log("Po replace:", normalized);
+      if (!isNaN(normalized) && normalized !== "") {
+        if (normalized > max) {
+          max = normalized;
+        }
+        if (normalized < min) {
+          min = normalized;
+        }
+      }
+    }
+  }
+  return {
+    max: max,
+    min: min
+  };
+}
+
 function Coloring() {
   var arkusz = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = arkusz.getSheets();
   var firstSheet = sheets[0];
+
   for (var i = 2; i <= 27; i++) {
-    var max = null; // Inicjujemy max dla każdego wiersza
-    var min = 400; // Inicjujemy min dla każdego wiersza
-
-    var range = firstSheet.getRange("B" + i + ":E" + i);
-    var values = range.getValues()[0];
-
-    for (var j = 0; j < values.length; j++) {
-      if (values[j] !== ""){
-        var normalized = values[j].toString().replace(/[^0-9,.]/g, '').replace(",",".").trim();
-        console.log("Po replace:", normalized);
-        if (!isNaN(normalized)) { // Sprawdzamy czy znormalizowana wartość jest liczbą
-          if (normalized > max) {
-            max = normalized;
-          }
-          if (normalized < min) {
-            min = normalized;
-          }
-        }
-      }
-      
-    }
-
-    var diff = max - min;
-    firstSheet.getRange("J" + i).setValue(diff);
-
-    max = null;
-    min = 400;
+    var range1 = firstSheet.getRange("B" + i + ":E" + i);
+    var result1 = processRange(range1);
 
     var range2 = firstSheet.getRange("F" + i + ":I" + i);
-    var values2 = range2.getValues()[0];
+    var result2 = processRange(range2);
 
-    for (var j = 0; j < values2.length; j++) {
-      if (values2[j] !== ""){
-        var normalized2 = values2[j].toString().replace(/[^0-9,.]/g, '').replace(",",".").trim();
-        console.log("Po replace:", normalized);
-        if (!isNaN(normalized2)) { // Sprawdzamy czy znormalizowana wartość jest liczbą
-          if (normalized2 > max) {
-            max = normalized2;
-          }
-          if (normalized2 < min) {
-            min = normalized2;
-          }
-        }
-      }
+    var diff1 = result1.max - result1.min;
+    var diff2 = result2.max - result2.min;
+
+    if (diff1 === -400) {
+      diff1 = "";
+    }
+    if (diff2 === -400) {
+      diff2 = "";
     }
 
-    var diff2 = max - min;
+    firstSheet.getRange("J" + i).setValue(diff1);
     firstSheet.getRange("K" + i).setValue(diff2);
   }
-  for (var l = 0; l < 2; l++){
-    colorizeCells((l===0) ? "J" : "K");
+
+  for (var l = 0; l < 2; l++) {
+    colorizeCells((l === 0) ? "J" : "K");
   }
 }
 
-function colorizeCells(collumn) {
+function colorizeCells(column) {
   var arkusz = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = arkusz.getSheets();
   var firstSheet = sheets[0];
-  
+
   for (var i = 2; i <= 27; i++) {
-    var range = firstSheet.getRange(collumn + i);
+    var range = firstSheet.getRange(column + i);
     var value = range.getValue();
-    
+
     if (value > 0 && value < 0.31) {
       range.setBackground("green");
     } else if (value >= 0.31 && value < 0.5) {
