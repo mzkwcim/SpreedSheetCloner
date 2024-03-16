@@ -1,0 +1,72 @@
+function CopyATrainingWeek() {
+  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = activeSpreadsheet.getSheets();
+  var sheetToCopy = sheets[sheets.length - 1];
+  var newSheet = sheetToCopy.copyTo(activeSpreadsheet);
+  var newname = sheetToCopy.getName().split(' ')[0] + " " + (parseInt(sheetToCopy.getName().split(' ')[1]) + 1);
+  newSheet.setName(newname);
+  processCell(newname);
+}
+
+function processCell(newname) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(newname);
+  var week = fullWeeksCounter()
+  var weightPullDown = [35, 30, 45, 50, 55, 50, 45, 40, 35, 42.5]
+  var repsPullDown = [10, 12, 6, 4, 3, 5, 7, 9, 11, 8 ]
+  var pullUpSets = [3,5,7,4,6,2]
+  var pullUpReps = [4,3,2,4,4,5]
+  var squatReps = [5,6,3,1,4,2]
+  var squatWeight = [35,32.5,40,45,37.5,42.5]
+  var ohpReps = [1,7,5,3,2,4,6]
+  var ohpWeight = [35,27.5,30,32.5,35,32.5,30]
+  var machineRowReps = [8,10,12,11,9,7,5,3,]
+  var machineRowWeight = [42.5,37.5,32.5,37.5,42.5,47.5,52.5,57.5]
+  var bpReps = [4,3,2,5,1,6]
+  var bpWeight = [35,37.5,40,32.5,42.5,35]
+  var dbohpReps = [7,4,1,2,5,8,10]
+  var dbohpWeight = [12.5,15,17.5,17.5,15,12.5,10]
+  var dipReps = [4,2,1,3,5]
+  var dipWeight = [0,5,10,5,0]
+  var dbRowReps = [7,9,11,12,10,8,6,4,5]
+  var dbRowWeight = [12.5,10,7.5,7.5,10,12.5,15,17.5,17.5]
+  var hackSquatReps = [7,9,11,10,8,6,5]
+  var hackSquatWeight = [35,30,25,30,35,40,45]
+  var frenchpressReps = [7,9,11,12,10,8,6,5]
+  var frenchpressWeight = [12.5,10,7.5,7.5,10,12.5,15,17.5]
+
+  sheet.getRange("B3").setValue(pullUpSets[week%pullUpSets.length])
+  sheet.getRange("C3").setValue(pullUpReps[week%pullUpReps.length])
+  sheet.getRange("C4").setValue(squatReps[week%squatReps.length])
+  sheet.getRange("D4").setValue(squatWeight[week%squatWeight.length] - (2.5*(sheet.getRange("N4").getValue()-7)) + "kg")
+  sheet.getRange("C5").setValue(ohpReps[week%ohpReps.length])
+  sheet.getRange("D5").setValue(ohpWeight[week%ohpWeight.length] - (2.5*(sheet.getRange("N5").getValue()-7)) + "kg")
+  sheet.getRange("D6").setValue((parseFloat(sheet.getRange("D6").getValue().toString().match(/[\d.]+/g)) + 2.5) + "kg")
+  sheet.getRange("C7").setValue(machineRowReps[week%machineRowReps.length])
+  sheet.getRange("D7").setValue(machineRowWeight[week%machineRowWeight.length] + (Math.floor(week/machineRowWeight.length)*2.5)- (2.5*(sheet.getRange("N7").getValue()-7)) + "kg")
+  sheet.getRange("C11").setValue(bpReps[week%bpReps.length])
+  sheet.getRange("D11").setValue(bpWeight[week%bpWeight.length] + (Math.floor(week/bpWeight.length)*2.5)- (2.5*(sheet.getRange("N11").getValue()-7)) + "kg")
+  sheet.getRange("C12").setValue(repsPullDown[week%repsPullDown.length])
+  sheet.getRange("D12").setValue(weightPullDown[week%weightPullDown.length] + (Math.floor(week/weightPullDown.length)*2.5)- (2.5*(sheet.getRange("N12").getValue()-7)) + "kg")
+  sheet.getRange("C13").setValue(squatReps[week%squatReps.length])
+  sheet.getRange("D13").setValue(squatWeight[week%squatWeight.length] + (Math.floor(week/squatWeight.length)*2.5)-5- (2.5*(sheet.getRange("N13").getValue()-7)) + "kg")
+  sheet.getRange("D14").setValue((parseFloat(sheet.getRange("D14").getValue().toString().match(/[\d.]+/g)) + 2.5) + "kg")
+  sheet.getRange("C15").setValue(dbohpReps[week%dbohpReps.length])
+  sheet.getRange("D15").setValue(dbohpWeight[week%dbohpWeight.length] + (Math.floor(week/dbohpWeight.length)*2.5)-5- (2.5*(sheet.getRange("N14").getValue()-7)) + "kg/strona")
+  sheet.getRange("C19").setValue(dipReps[week%dipReps.length])
+  sheet.getRange("D19").setValue(dipWeight[week%dipWeight.length] + (Math.floor(week/dipWeight.length)*2.5)-5- (2.5*(sheet.getRange("N19").getValue()-7)) + "kg")
+  sheet.getRange("C20").setValue(dbRowReps[week%dbRowReps.length] + "/strona")
+  sheet.getRange("D20").setValue(dbRowWeight[week%dbRowWeight.length] + (Math.floor(week/dbRowWeight.length)*2.5)-5- (2.5*(sheet.getRange("N20").getValue()-7)) + "kg/hantel")
+  sheet.getRange("D21").setValue((parseFloat(sheet.getRange("D21").getValue().toString().match(/[\d.]+/g)) + 2.5) + "kg")
+  sheet.getRange("C22").setValue(hackSquatReps[week%hackSquatReps.length])
+  sheet.getRange("D22").setValue(hackSquatWeight[week%hackSquatWeight.length] + (Math.floor(week/hackSquatWeight.length)*2.5)-5- (2.5*(sheet.getRange("N22").getValue()-7)) + "kg")
+  sheet.getRange("C23").setValue(hackSquatReps[week%frenchpressReps.length])
+  sheet.getRange("D23").setValue(frenchpressWeight[week%frenchpressWeight.length] + (Math.floor(week/frenchpressWeight.length)*2.5)-5- (2.5*(sheet.getRange("N23").getValue()-7)) + "kg")
+  sheet.getRange("I3:O7").clear();
+  sheet.getRange("I19:O23").clear();
+  sheet.getRange("I11:O15").clear();
+  
+}
+
+const fullWeeksCounter = () => (Math.floor((new Date() - new Date('2024-03-09')) / (7 * 24 * 60 * 60 * 1000)));
+
+
