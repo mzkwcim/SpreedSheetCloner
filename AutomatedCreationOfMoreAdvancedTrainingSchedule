@@ -6,38 +6,55 @@ function CopyATrainingWeek() {
   var newname = sheetToCopy.getName().split(' ')[0] + " " + (parseInt(sheetToCopy.getName().split(' ')[1]) + 1);
   newSheet.setName(newname);
   processCell(newname);
+  trainingCounter(newname);
 }
 
 function processCell(newname) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(newname);
   var week = fullWeeksCounter()
-  var weightPullDown = [45, 40, 55, 60, 65, 60, 55, 50, 45, 52.5]
+  var weightPullDown = [55, 50, 65, 70, 75, 70, 65, 60, 55, 62.5]
   var repsPullDown = [10, 12, 6, 4, 3, 5, 7, 9, 11, 8 ]
-  var ohpWeight = [30, 32.5, 25, 22.5, 22.5, 25, 27.5, 30, 32.5, 35]
-  var ohpreps = [5, 3, 9, 11, 12, 10, 8, 6, 4, 2]
-  var bulgarianSpliSquatReps = [8, 10, 12, 11, 9, 7, 5, 3, 4, 6]
-  var bulgarianSplitSquatWeight = [15, 12.5, 10, 12.5, 15, 17.5, 20, 22.5, 22.5, 20]
   var pullUpWeight = [0, 0, 5, 10, 15, 15, 10, 5]
   var pullUpReps = [8, 7, 5, 3, 1, 2, 4, 6]
-  var singleLegDLReps = [7, 9, 11, 12, 10, 8, 6, 5]
-  var singlLegDLWeight = [25, 22.5, 20, 20, 22.5, 25, 27.5, 30]
 
-  sheet.getRange("C13").setValue((singleLegDLReps[week % singleLegDLReps.length]).toString() + "/strona" )
-  sheet.getRange("D13").setValue((singlLegDLWeight[week % singlLegDLWeight.length] + Math.floor(week/10)*2.5).toString() + "kg")
-  sheet.getRange("C12").setValue(pullUpReps[week % pullUpReps.length])
-  sheet.getRange("D12").setValue(pullUpWeight[week % pullUpWeight.length] + (Math.floor(week/10)*1.25).toString() + "kg")
-  sheet.getRange("C11").setValue(bulgarianSpliSquatReps[week % bulgarianSpliSquatReps.length])
-  sheet.getRange("D10").setValue((bulgarianSplitSquatWeight[week % bulgarianSplitSquatWeight.length] + (Math.floor(week/10)*2.5)).toString() + "kg/hantel")
-  sheet.getRange("C10").setValue(ohpreps[week % ohpreps.length])
-  sheet.getRange("D10").setValue((ohpWeight[week % ohpWeight.length] + (Math.floor(week/10)*2.5)).toString() + "kg")
-  sheet.getRange("C5").setValue(repsPullDown[week % weightPullDown.length])
-  sheet.getRange("D5").setValue((weightPullDown[week % weightPullDown.length] + (Math.floor(week/10)*2.5)).toString() + "kg")
-  sheet.getRange("D6").setValue((65 + (week * 2.5)).toString() + "kg")
-  var listOfCells = ["D3", "D4"];
+  var bpReps = [4,6,8,5,5,3,3,6,4,6,2,4,2,5,1,5,3,1,3,2,6,2,4,3,4,3,2,2,3,2,4]
+  var bpWeight = [65,60,60,65,65,70,70,65,70,65,75,70,75,70,80,70,75,80,75,80,70,85,75,80,75,80,85,90,85,90,80]
+  var bpSets = [6,6,3,3,5,4,6,3,5,5,5,5,7,3,4,5,3,7,5,4,3,3,3,3,4,4,5,3,3,4,3]
+  
+  sheet.getRange("B3").setValue(bpSets[week%bpSets.length])
+  sheet.getRange("C3").setValue(bpReps[week%bpReps.length])
+  sheet.getRange("D3").setValue(bpWeight[week%bpWeight.length] + "kg")
+  sheet.getRange("C5").setValue(repsPullDown[week%repsPullDown.length])
+  sheet.getRange("D5").setValue(weightPullDown[week%weightPullDown.length] + (Math.floor(week/weightPullDown.length) *2.5) + "kg")
+  sheet.getRange("D4").setValue((parseFloat(sheet.getRange("D4").getValue().toString().match(/[\d.]+/g)) + 2.5) + "kg")
+  sheet.getRange("D6").setValue((parseFloat(sheet.getRange("D6").getValue().toString().match(/[\d.]+/g)) + 2.5) + "kg")
+  sheet.getRange("D11").setValue((parseFloat(sheet.getRange("D11").getValue().toString().match(/[\d.]+/g)) + 2.5) + "kg")
+  sheet.getRange("B12").setValue(3);
+  sheet.getRange("C12").setValue(pullUpReps[week%pullUpReps.length])
+  sheet.getRange("D12").setValue(pullUpWeight[week%pullUpWeight.length] + (Math.floor(week/pullUpWeight.length) *2.5) + "kg")
+  sheet.getRange("D13").setValue((parseFloat(sheet.getRange("D13").getValue().toString().match(/[\d.]+/g)) + 2.5) + "kg")
+  sheet.getRange("D18").setValue((parseFloat(sheet.getRange("D18").getValue().toString().match(/[\d.]+/g)) + 2.5) + "kg")
+  sheet.getRange("D20").setValue((parseFloat(sheet.getRange("D20").getValue().toString().match(/[\d.]+/g)) + 2.5) + "kg")
+  sheet.getRange("C19").setValue(pullUpReps[week%pullUpReps.length])
+  sheet.getRange("D19").setValue(pullUpWeight[(week+1)%pullUpWeight.length] + 10 + (Math.floor(week%pullUpWeight.length) * 2.5) + "kg")
+
+  var listOfCells = ["D10", "D17"];
   for (var i = 0; i < listOfCells.length; i++) {
-    var cellValue = sheet.getRange(listOfCells[i]).getValue().replace(/[a-zA-Z]/g, "");
-    sheet.getRange(listOfCells[i]).setValue((week % 2 === 0) ? (Number(cellValue) + 2.5).toString() + "\\" + (Number(cellValue) + 2.5).toString() + "\\" + (Number(cellValue)) + "\\" + (Number(cellValue)) + "kg": (Number(cellValue) + 2.5) + "kg");
+    var cellValue = sheet.getRange(listOfCells[i]).getValue().toString().replace(/[^0-9]/g, "");
+    sheet.getRange(listOfCells[i]).setValue((week % 2 === 1) ? (Number(cellValue) + 2.5).toString() + "\\" + (Number(cellValue) + 2.5).toString() + "\\" + (Number(cellValue)) + "\\" + (Number(cellValue)) + "kg": (Number(cellValue) + 2.5) + "kg");
   }
 }
 
 const fullWeeksCounter = () => (Math.floor((new Date() - new Date('2024-03-09')) / (7 * 24 * 60 * 60 * 1000)));
+
+function trainingCounter(newname){
+  var sheet2 = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(newname);
+  var trainingNumber = parseInt(sheet2.getRange("A1").getValue().toString().split(" ")[1]);
+  sheet2.getRange("A1").setValue("Trening " + parseInt(trainingNumber + 3));
+  sheet2.getRange("A8").setValue("Trening " + parseInt(trainingNumber + 4));
+  sheet2.getRange("A15").setValue("Trening " + parseInt(trainingNumber + 5));
+  
+}
+
+
+
